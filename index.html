@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft服务器IP检测与分享工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'Minecraft', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #3c8d2c 0%, #1e5a3c 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            padding: 40px;
+            width: 100%;
+            max-width: 750px;
+            backdrop-filter: blur(10px);
+            border: 8px solid #5a7d3a;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #3c8d2c;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            font-family: 'Minecraft', monospace;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .minecraft-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .server-info-card {
+            background: #f0f7e6;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 3px solid #5a7d3a;
+        }
+        
+        .info-group {
+            margin-bottom: 25px;
+        }
+        
+        .info-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        .info-title {
+            font-weight: 600;
+            color: #3c8d2c;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-title i {
+            font-size: 1.2rem;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        input {
+            padding: 12px 16px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            font-size: 1rem;
+            flex: 1;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #3c8d2c;
+            box-shadow: 0 0 0 3px rgba(60, 141, 44, 0.2);
+        }
+        
+        .port-input {
+            width: 100px;
+        }
+        
+        .connection-string {
+            background: #fff;
+            border: 2px dashed #5a7d3a;
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            word-break: break-all;
+            margin-top: 10px;
+            color: #2d501c;
+            background-color: #f9ffe6;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 160px;
+        }
+        
+        .primary-btn {
+            background: linear-gradient(45deg, #3c8d2c, #2a6b1e);
+            color: white;
+        }
+        
+        .primary-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(60, 141, 44, 0.4);
+        }
+        
+        .secondary-btn {
+            background: linear-gradient(45deg, #4a90e2, #2c6fb4);
+            color: white;
+        }
+        
+        .secondary-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(74, 144, 226, 0.4);
+        }
+        
+        .success-btn {
+            background: linear-gradient(45deg, #4CAF50, #2E7D32);
+            color: white;
+        }
+        
+        .success-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .share-section {
+            background: #e8f5e9;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid #a5d6a7;
+        }
+        
+        .share-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .share-btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            background: #fff;
+            border: 2px solid #3c8d2c;
+            color: #3c8d2c;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 120px;
+            justify-content: center;
+        }
+        
+        .share-btn:hover {
+            background: #3c8d2c;
+            color: white;
+        }
+        
+        .qr-code-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+        }
+        
+        #qrcode {
+            width: 200px;
+            height: 200px;
+            margin: 15px 0;
+        }
+        
+        .instructions {
+            background: #fff9e6;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid #ffd54f;
+        }
+        
+        .instructions h3 {
+            color: #f57c00;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            color: #666;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ccc;
+            margin-right: 8px;
+        }
+        
+        .status-dot.active {
+            background: #4CAF50;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .validation-issues {
+            background: #ffebee;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #f44336;
+            display: none;
+        }
+        
+        .validation-issues.show {
+            display: block;
+        }
+        
+        .validation-issues h4 {
+            color: #d32f2f;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        
+        .validation-issues ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+        
+        .validation-issues li {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .ip-examples {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin: 10px 0;
+            border-left: 4px solid #2196f3;
+            font-size: 0.9rem;
+        }
+        
+        .ip-examples strong {
+            color: #1565c0;
+        }
+        
+        .ip-examples span {
+            font-family: 'Courier New', monospace;
+            background: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin: 0 4px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .note {
+            background: #e3f2fd;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #2196f3;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .controls, .share-options {
+                flex-direction: column;
+            }
+            
+            button, .share-btn {
+                width: 100%;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .port-input {
+                width: 100%;
+            }
+            
+            #qrcode {
+                width: 150px;
+                height: 150px;
+            }
+        }
+        
+        .copied-notice {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+        }
+        
+        .minecraft-block {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background: #3c8d2c;
+            margin: 0 5px;
+            vertical-align: middle;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            margin-left: 5px;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: #333;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .validation-ok {
+            background: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .validation-ok h4 {
+            color: #2E7D32;
+        }
+    </style>
+    <!-- QR Code 生成库 -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.0/build/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="minecraft-icon">⛏️🧱🌳</div>
+            <h1>Minecraft 服务器IP工具</h1>
+            <p class="subtitle">轻松获取、生成和分享您的Minecraft服务器连接信息</p>
+        </header>
+        
+        <div class="ip-examples">
+            <strong>支持的IP地址格式示例：</strong>
+            <span>192.168.1.1</span>
+            <span>play.example.com</span>
+            <span>mc.server.com:25566</span>
+            <span>123.45.67.89:25565</span>
+        </div>
+        
+        <div class="server-info-card">
+            <div class="info-group">
+                <div class="info-title">
+                    <span>🖥️ 服务器连接信息</span>
+                </div>
+                
+                <div class="input-group">
+                    <input type="text" id="server-ip" placeholder="输入服务器IP地址 (例如: 123.45.67.89 或 play.example.com)">
+                    <input type="text" id="server-port" class="port-input" placeholder="端口" value="25565">
+                </div>
+                
+                <div id="validation-issues" class="validation-issues">
+                    <h4>⚠️ 验证问题：</h4>
+                    <ul id="issue-list"></ul>
+                </div>
+                
+                <div id="validation-ok" class="validation-issues validation-ok" style="display: none;">
+                    <h4>✓ IP地址验证通过</h4>
+                    <p>连接信息已准备就绪</p>
+                </div>
+                
+                <div class="info-title">
+                    <span>🔗 Minecraft连接字符串</span>
+                    <div class="tooltip">?
+                        <span class="tooltiptext">将此连接字符串复制到Minecraft游戏的"服务器地址"中，或直接发送给朋友</span>
+                    </div>
+                </div>
+                <div id="connection-string" class="connection-string">
+                    <span id="connection-text">请先输入服务器IP地址</span>
+                </div>
+            </div>
+            
+            <div class="info-group">
+                <div class="info-title">
+                    <span>🌐 您的公网IP地址</span>
+                </div>
+                <div id="public-ip" class="connection-string">
+                    正在检测您的公网IP地址...
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="get-ip-btn" class="primary-btn">
+                <span>🌍</span> 获取我的公网IP
+            </button>
+            <button id="generate-btn" class="secondary-btn">
+                <span>⚡</span> 生成连接信息
+            </button>
+            <button id="copy-btn" class="success-btn">
+                <span>📋</span> 复制连接信息
+            </button>
+        </div>
+        
+        <div class="share-section">
+            <div class="info-title">
+                <span>📤 分享给朋友</span>
+            </div>
+            <p>通过以下方式分享您的Minecraft服务器信息：</p>
+            
+            <div class="share-options">
+                <button id="share-text-btn" class="share-btn">
+                    <span>📝</span> 生成分享文本
+                </button>
+                <button id="share-qr-btn" class="share-btn">
+                    <span>📱</span> 生成QR码
+                </button>
+            </div>
+            
+            <div id="qr-code-container" class="qr-code-container" style="display: none;">
+                <p>使用手机扫描此QR码连接服务器：</p>
+                <div id="qrcode"></div>
+                <p>或发送此链接给朋友：<br><span id="qr-link" style="font-size: 0.9rem; color: #3c8d2c; word-break: break-all;"></span></p>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>📋 Minecraft服务器连接指南</h3>
+            <ol>
+                <li><strong>输入服务器IP</strong>: 在上方输入您的Minecraft服务器IP地址和端口（默认25565）</li>
+                <li><strong>生成连接信息</strong>: 点击"生成连接信息"按钮创建连接字符串</li>
+                <li><strong>复制连接信息</strong>: 点击"复制连接信息"按钮复制到剪贴板</li>
+                <li><strong>在Minecraft中连接</strong>:
+                    <ul style="margin-top: 8px; margin-left: 20px;">
+                        <li>打开Minecraft游戏</li>
+                        <li>点击"多人游戏" → "添加服务器"</li>
+                        <li>在"服务器地址"中粘贴复制的连接信息</li>
+                        <li>点击"完成"然后加入服务器</li>
+                    </ul>
+                </li>
+            </ol>
+            <div class="note">
+                <strong>注意:</strong> 要使朋友能够连接到您的服务器，您需要确保:
+                1. 您的网络路由器已正确设置端口转发（默认端口: 25565）
+                2. 防火墙允许Minecraft服务器通过
+                3. 您使用的是公网IP地址，而非局域网IP（如192.168.x.x）
+            </div>
+        </div>
+        
+        <div class="status">
+            <div>
+                <span>状态:</span>
+                <span id="status-text">就绪</span>
+            </div>
+            <div>
+                <span class="status-dot"></span>
+                <span id="last-updated">--</span>
+            </div>
+        </div>
+        
+        <footer>
+            <p>⛏️ Minecraft服务器IP工具 v1.1 | 改进的IP验证逻辑</p>
+            <p>确保您拥有运行Minecraft服务器的合法权限，并遵守Minecraft最终用户许可协议</p>
+        </footer>
+    </div>
+
+    <div id="copied-notice" class="copied-notice">
+        已复制到剪贴板！
+    </div>
+
+    <script>
+        // DOM元素
+        const serverIpInput = document.getElementById('server-ip');
+        const serverPortInput = document.getElementById('server-port');
+        const connectionText = document.getElementById('connection-text');
+        const publicIpElement = document.getElementById('public-ip');
+        const getIpBtn = document.getElementById('get-ip-btn');
+        const generateBtn = document.getElementById('generate-btn');
+        const copyBtn = document.getElementById('copy-btn');
+        const shareTextBtn = document.getElementById('share-text-btn');
+        const shareQrBtn = document.getElementById('share-qr-btn');
+        const qrCodeContainer = document.getElementById('qr-code-container');
+        const qrLinkElement = document.getElementById('qr-link');
+        const statusText = document.getElementById('status-text');
+        const lastUpdatedElement = document.getElementById('last-updated');
+        const copiedNotice = document.getElementById('copied-notice');
+        const validationIssues = document.getElementById('validation-issues');
+        const validationOk = document.getElementById('validation-ok');
+        const issueList = document.getElementById('issue-list');
+        
+        // 状态变量
+        let publicIp = '';
+        let serverConnectionString = '';
+        let validationTimeout = null;
+        
+        // IP查询API列表
+        const ipApis = [
+            'https://api.ipify.org?format=json',
+            'https://api64.ipify.org?format=json',
+            'https://api.my-ip.io/ip.json',
+            'https://ipapi.co/json/'
+        ];
+        
+        // 更新状态
+        function updateStatus(message, type = 'info') {
+            statusText.textContent = message;
+            statusText.style.color = type === 'error' ? '#f44336' : 
+                                   type === 'success' ? '#4CAF50' : '#666';
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('zh-CN', { 
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            lastUpdatedElement.textContent = `最后更新: ${timeString}`;
+        }
+        
+        // 显示提示消息
+        function showNotice(message, duration = 2000) {
+            copiedNotice.textContent = message;
+            copiedNotice.style.display = 'block';
+            copiedNotice.style.background = '#4CAF50';
+            
+            setTimeout(() => {
+                copiedNotice.style.display = 'none';
+            }, duration);
+        }
+        
+        // 显示错误消息
+        function showError(message) {
+            copiedNotice.textContent = message;
+            copiedNotice.style.display = 'block';
+            copiedNotice.style.background = '#f44336';
+            
+            setTimeout(() => {
+                copiedNotice.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 显示验证问题
+        function showValidationIssues(issues) {
+            if (issues && issues.length > 0) {
+                issueList.innerHTML = '';
+                issues.forEach(issue => {
+                    const li = document.createElement('li');
+                    li.textContent = issue;
+                    issueList.appendChild(li);
+                });
+                validationIssues.classList.add('show');
+                validationOk.style.display = 'none';
+            } else {
+                validationIssues.classList.remove('show');
+                validationOk.style.display = 'block';
+            }
+        }
+        
+        // 获取公网IP
+        async function getPublicIp() {
+            getIpBtn.disabled = true;
+            getIpBtn.innerHTML = '<span>⏳</span> 获取中...';
+            updateStatus('正在获取公网IP地址...');
+            
+            // 尝试多个IP查询API
+            for (let i = 0; i < ipApis.length; i++) {
+                try {
+                    const response = await fetch(ipApis[i], { 
+                        method: 'GET',
+                        mode: 'cors',
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    
+                    if (!response.ok) continue;
+                    
+                    const data = await response.json();
+                    
+                    // 不同API返回格式不同
+                    if (ipApis[i].includes('ipify.org')) {
+                        publicIp = data.ip;
+                    } else if (ipApis[i].includes('my-ip.io')) {
+                        publicIp = data.ip;
+                    } else if (ipApis[i].includes('ipapi.co')) {
+                        publicIp = data.ip;
+                    }
+                    
+                    if (publicIp) {
+                        publicIpElement.textContent = publicIp;
+                        updateStatus('公网IP获取成功', 'success');
+                        serverIpInput.value = publicIp;
+                        validateAndGenerateConnectionString();
+                        break;
+                    }
+                } catch (error) {
+                    // 继续尝试下一个API
+                }
+            }
+            
+            if (!publicIp) {
+                publicIpElement.textContent = '获取失败，请手动输入IP地址';
+                updateStatus('无法获取公网IP，请手动输入', 'error');
+            }
+            
+            getIpBtn.disabled = false;
+            getIpBtn.innerHTML = '<span>🌍</span> 获取我的公网IP';
+        }
+        
+        // 改进的地址验证函数
+        function isValidAddress(address) {
+            const issues = [];
+            
+            if (!address || address.trim() === '') {
+                issues.push('IP地址不能为空');
+                return { valid: false, issues, cleanedAddress: '' };
+            }
+            
+            const cleanedAddress = address.trim();
+            
+            // 检查是否包含端口
+            let ipPart = cleanedAddress;
+            let portPart = '';
+            
+            if (cleanedAddress.includes(':')) {
+                const parts = cleanedAddress.split(':');
+                if (parts.length === 2) {
+                    ipPart = parts[0];
+                    portPart = parts[1];
+                    
+                    // 验证端口
+                    const portNum = parseInt(portPart, 10);
+                    if (isNaN(portNum) || portNum < 1 || portNum > 65535) {
+                        issues.push(`端口 "${portPart}" 无效，请使用1-65535之间的数字`);
+                        ipPart = cleanedAddress; // 恢复原始地址
+                    }
+                } else if (parts.length > 2) {
+                    // 可能是IPv6地址，暂时接受
+                }
+            }
+            
+            // 验证IP部分
+            // 1. 检查是否为有效的IPv4地址
+            const ipv4Regex = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
+            const ipv4Match = ipPart.match(ipv4Regex);
+            
+            if (ipv4Match) {
+                // 检查每个部分是否在0-255之间
+                for (let i = 1; i <= 4; i++) {
+                    const num = parseInt(ipv4Match[i], 10);
+                    if (num < 0 || num > 255) {
+                        issues.push(`IPv4地址段 "${num}" 超出范围 (0-255)`);
+                        return { valid: false, issues, cleanedAddress: ipPart };
+                    }
+                }
+                
+                // 检查特殊IP地址
+                if (ipPart.startsWith('0.')) {
+                    issues.push('警告: 以0开头的IP地址可能无法正常使用');
+                } else if (ipPart.startsWith('127.')) {
+                    issues.push('警告: 127.x.x.x是回环地址，只能本地访问');
+                } else if (ipPart.startsWith('169.254.')) {
+                    issues.push('警告: 169.254.x.x是APIPA地址，通常表示网络配置问题');
+                } else if (ipPart.startsWith('192.168.') || 
+                          ipPart.startsWith('10.') || 
+                          (ipPart.startsWith('172.') && parseInt(ipPart.split('.')[1], 10) >= 16 && parseInt(ipPart.split('.')[1], 10) <= 31)) {
+                    issues.push('注意: 这是私有IP地址，朋友需要连接到您的公网IP才能访问');
+                }
+                
+                return { valid: true, issues, cleanedAddress: ipPart };
+            }
+            
+            // 2. 检查是否为有效的域名
+            const domainRegex = /^(?!:\/\/)([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
+            if (domainRegex.test(ipPart)) {
+                return { valid: true, issues, cleanedAddress: ipPart };
+            }
+            
+            // 3. 检查是否为localhost
+            if (ipPart.toLowerCase() === 'localhost') {
+                issues.push('注意: localhost只能本地访问，朋友无法连接');
+                return { valid: true, issues, cleanedAddress: ipPart };
+            }
+            
+            // 4. 简单的IPv6检查（简化版）
+            const ipv6Regex = /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$|^::([0-9a-fA-F]{1,4}:){0,6}[0-9a-fA-F]{1,4}$|^([0-9a-fA-F]{1,4}:){1,7}:$/;
+            if (ipv6Regex.test(ipPart)) {
+                return { valid: true, issues, cleanedAddress: ipPart };
+            }
+            
+            // 5. 如果以上都不匹配，但看起来像IP地址
+            if (/^[0-9\.:a-fA-F-]+$/.test(ipPart)) {
+                issues.push('警告: 无法识别的IP地址格式，但可能有效');
+                return { valid: true, issues, cleanedAddress: ipPart };
+            }
+            
+            issues.push('IP地址格式无效，请输入有效的IP地址或域名');
+            return { valid: false, issues, cleanedAddress: ipPart };
+        }
+        
+        // 验证并生成连接字符串
+        function validateAndGenerateConnectionString() {
+            let ip = serverIpInput.value.trim();
+            let port = serverPortInput.value.trim();
+            
+            if (!ip) {
+                connectionText.textContent = '请先输入服务器IP地址';
+                showValidationIssues(['请输入服务器IP地址']);
+                updateStatus('请输入服务器IP地址', 'error');
+                return;
+            }
+            
+            // 验证IP地址
+            const validation = isValidAddress(ip);
+            
+            if (!validation.valid) {
+                connectionText.textContent = 'IP地址格式无效';
+                showValidationIssues(validation.issues);
+                updateStatus('IP地址格式无效', 'error');
+                return;
+            }
+            
+            // 显示验证问题（即使是警告）
+            showValidationIssues(validation.issues);
+            
+            // 如果没有端口，使用默认端口
+            if (!port) {
+                port = '25565';
+                serverPortInput.value = '25565';
+            }
+            
+            // 验证端口
+            const portNum = parseInt(port, 10);
+            if (isNaN(portNum) || portNum < 1 || portNum > 65535) {
+                showValidationIssues([`端口 "${port}" 无效，请使用1-65535之间的数字`]);
+                updateStatus('端口无效', 'error');
+                return;
+            }
+            
+            // 生成连接字符串
+            if (port === '25565') {
+                serverConnectionString = validation.cleanedAddress; // 默认端口可以省略
+            } else {
+                serverConnectionString = `${validation.cleanedAddress}:${port}`;
+            }
+            
+            connectionText.textContent = serverConnectionString;
+            updateStatus('连接信息已生成', 'success');
+        }
+        
+        // 复制连接信息到剪贴板
+        function copyConnectionString() {
+            if (!serverConnectionString) {
+                showError('请先生成连接信息');
+                return;
+            }
+            
+            navigator.clipboard.writeText(serverConnectionString)
+                .then(() => {
+                    showNotice('连接信息已复制到剪贴板！');
+                    updateStatus('连接信息已复制', 'success');
+                })
+                .catch(err => {
+                    // 如果clipboard API不可用，使用备用方法
+                    const textArea = document.createElement('textarea');
+                    textArea.value = serverConnectionString;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    
+                    try {
+                        const successful = document.execCommand('copy');
+                        if (successful) {
+                            showNotice('连接信息已复制到剪贴板！');
+                            updateStatus('连接信息已复制', 'success');
+                        } else {
+                            showError('复制失败，请手动复制');
+                        }
+                    } catch (err) {
+                        showError('复制失败，请手动复制');
+                    }
+                    
+                    document.body.removeChild(textArea);
+                });
+        }
+        
+        // 生成分享文本
+        function generateShareText() {
+            if (!serverConnectionString) {
+                showError('请先生成连接信息');
+                return;
+            }
+            
+            const shareText = `🎮 Minecraft服务器连接信息 🎮\n\n服务器地址: ${serverConnectionString}\n\n复制此地址到Minecraft的"服务器地址"中即可加入！\n\n生成时间: ${new Date().toLocaleString('zh-CN')}`;
+            
+            navigator.clipboard.writeText(shareText)
+                .then(() => {
+                    showNotice('分享文本已复制到剪贴板！');
+                    updateStatus('分享文本已复制', 'success');
+                })
+                .catch(err => {
+                    showError('无法复制，请手动复制');
+                });
+        }
+        
+        // 生成QR码
+        function generateQRCode() {
+            if (!serverConnectionString) {
+                showError('请先生成连接信息');
+                return;
+            }
+            
+            // 生成连接URL
+            const connectionUrl = `minecraft://?addExternalServer=${encodeURIComponent(serverConnectionString)}`;
+            
+            // 显示QR码容器
+            qrCodeContainer.style.display = 'flex';
+            qrLinkElement.textContent = connectionUrl;
+            
+            // 生成QR码
+            document.getElementById('qrcode').innerHTML = '';
+            QRCode.toCanvas(document.getElementById('qrcode'), connectionUrl, 
+                { width: 200, height: 200, margin: 1 }, 
+                function(error) {
+                    if (error) {
+                        showError('生成QR码失败');
+                        console.error(error);
+                    } else {
+                        updateStatus('QR码已生成，使用手机扫描连接', 'success');
+                    }
+                }
+            );
+        }
+        
+        // 防抖验证函数
+        function debouncedValidation() {
+            if (validationTimeout) {
+                clearTimeout(validationTimeout);
+            }
+            
+            validationTimeout = setTimeout(() => {
+                validateAndGenerateConnectionString();
+            }, 500);
+        }
+        
+        // 页面加载时自动获取IP
+        window.addEventListener('DOMContentLoaded', () => {
+            updateStatus('工具已就绪');
+            
+            // 设置默认端口
+            serverPortInput.value = '25565';
+            
+            // 自动获取公网IP
+            setTimeout(() => {
+                getPublicIp();
+            }, 500);
+            
+            // 为输入框添加事件监听（使用防抖）
+            serverIpInput.addEventListener('input', debouncedValidation);
+            serverPortInput.addEventListener('input', debouncedValidation);
+            
+            // 为输入框添加示例文本
+            serverIpInput.placeholder = '例如: play.example.com 或 123.45.67.89';
+            
+            // 为输入框添加焦点效果
+            serverIpInput.addEventListener('focus', function() {
+                this.style.borderColor = '#3c8d2c';
+                this.style.boxShadow = '0 0 0 3px rgba(60, 141, 44, 0.2)';
+            });
+            
+            serverIpInput.addEventListener('blur', function() {
+                this.style.borderColor = '#ccc';
+                this.style.boxShadow = 'none';
+                validateAndGenerateConnectionString(); // 失去焦点时立即验证
+            });
+        });
+        
+        // 按钮事件监听
+        getIpBtn.addEventListener('click', getPublicIp);
+        generateBtn.addEventListener('click', validateAndGenerateConnectionString);
+        copyBtn.addEventListener('click', copyConnectionString);
+        shareTextBtn.addEventListener('click', generateShareText);
+        shareQrBtn.addEventListener('click', generateQRCode);
+        
+        // 按Enter键生成连接信息
+        serverIpInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                validateAndGenerateConnectionString();
+            }
+        });
+        
+        serverPortInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                validateAndGenerateConnectionString();
+            }
+        });
+    </script>
+</body>
+</html>
